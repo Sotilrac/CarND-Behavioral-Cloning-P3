@@ -20,7 +20,7 @@ class BehaviourCloning(object):
         self.y_train = None
 
         self.model = None
-        self.epochs = 2
+        self.epochs = 10
 
         self.turn_steer = 10.0
 
@@ -54,9 +54,9 @@ class BehaviourCloning(object):
                             steering = float(row[3])
                         # Apply manual steering value for L and R views
                         elif ind == 1:
-                            steering = -self.turn_steer
-                        else:
                             steering = self.turn_steer
+                        else:
+                            steering = -self.turn_steer
 
                         # Store data
                         self.measurements.append(steering)
