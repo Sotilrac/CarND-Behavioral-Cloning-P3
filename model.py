@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import sys
 import csv
 import cv2
 import numpy as np
@@ -11,7 +12,7 @@ from keras.layers.convolutional import Conv2D, MaxPooling2D
 
 class BehaviourCloning(object):
     """Class implementing bahaviour cloning."""
-    def __init__(self):
+    def __init__(self, epochs):
         self.data_dir = 'data'
         self.images = list()
         self.measurements = list()
@@ -20,9 +21,9 @@ class BehaviourCloning(object):
         self.y_train = None
 
         self.model = None
-        self.epochs = 10
+        self.epochs = epochs
 
-        self.turn_steer = 10.0
+        self.turn_steer = 2.0
 
     def load_training_data(self):
         """Loads training data and stores in in np arrays.
@@ -54,9 +55,9 @@ class BehaviourCloning(object):
                             steering = float(row[3])
                         # Apply manual steering value for L and R views
                         elif ind == 1:
-                            steering = self.turn_steer
-                        else:
                             steering = -self.turn_steer
+                        else:
+                            steering = self.turn_steer
 
                         # Store data
                         self.measurements.append(steering)
@@ -110,7 +111,13 @@ class BehaviourCloning(object):
 
 def main():
     """model training"""
-    bh_cloning = BehaviourCloning()
+    try:
+        epochs = int(sys.argv[1])
+    except IndexError:
+        epochs = 2
+        print('Defaulting epochs to {}'.format(epochs))
+
+    bh_cloning = BehaviourCloning(epochs)
     bh_cloning.load_training_data()
     print('Loaded {} data entries.'.format(len(bh_cloning.measurements)))
     print('Loaded {} image entries with dimensions {}'.format(
